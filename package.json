@@ -1,0 +1,48 @@
+{
+  "name": "vikeditor",
+  "widgetName": "VikEditor",
+  "version": "1.0.0",
+  "description": "Medium-style block and inline WYSIWYG editor for Mendix 10",
+  "copyright": "2026 Vikas Yadav",
+  "author": "Vikas Yadav",
+  "license": "Apache-2.0",
+  "config": {
+    "projectPath": "./tests/testProject",
+    "mendixHost": "http://localhost:8080",
+    "developmentPort": 3000
+  },
+  "packagePath": "com.vikasyadav.widget.web.vikeditor",
+  "scripts": {
+    "start": "pluggable-widgets-tools start:web",
+    "build": "pluggable-widgets-tools build:web",
+    "lint": "pluggable-widgets-tools lint",
+    "lint:fix": "pluggable-widgets-tools lint:fix",
+    "release": "pluggable-widgets-tools release:web"
+  },
+  "dependencies": {
+    "@tiptap/core": "^2.11.5",
+    "@tiptap/extension-character-count": "^2.11.5",
+    "@tiptap/extension-code-block-lowlight": "^2.11.5",
+    "@tiptap/extension-image": "^2.11.5",
+    "@tiptap/extension-link": "^2.11.5",
+    "@tiptap/extension-placeholder": "^2.11.5",
+    "@tiptap/extension-table": "^2.11.5",
+    "@tiptap/extension-table-cell": "^2.11.5",
+    "@tiptap/extension-table-header": "^2.11.5",
+    "@tiptap/extension-table-row": "^2.11.5",
+    "@tiptap/extension-task-item": "^2.11.5",
+    "@tiptap/extension-task-list": "^2.11.5",
+    "@tiptap/extension-underline": "^2.11.5",
+    "@tiptap/extension-youtube": "^2.11.5",
+    "@tiptap/pm": "^2.11.5",
+    "@tiptap/react": "^2.11.5",
+    "@tiptap/starter-kit": "^2.11.5",
+    "@tiptap/suggestion": "^2.11.5",
+    "lowlight": "^3.3.0",
+    "tippy.js": "^6.3.7"
+  },
+  "devDependencies": {
+    "@mendix/pluggable-widgets-tools": "^10.15.0",
+    "typescript": "^5.4.5"
+  }
+}

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="com.vikasyadav.widget.web.vikeditor.VikEditor" pluginWidget="true" needsEntityContext="true" offlineCapable="false" supportedPlatform="Web" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/@mendix/pluggable-widgets-tools/configs/widgets.xsd">
+    <name>VikEditor</name>
+    <description>Medium-style block and inline WYSIWYG editor with bubble toolbar, slash commands, callouts, tables, and media embeds.</description>
+    <icon/>
+    <properties>
+        <propertyGroup caption="Data Source">
+            <property key="contentAttribute" type="attribute" required="true">
+                <caption>Content Attribute</caption>
+                <description>String attribute (preferably unlimited length) storing the HTML content of the editor.</description>
+                <attributeTypes>
+                    <attributeType name="String"/>
+                </attributeTypes>
+            </property>
+            <property key="placeholder" type="string" required="false" defaultValue="Tell your story, or type '/' for commands...">
+                <caption>Placeholder Text</caption>
+                <description>Empty canvas placeholder text shown when there is no content.</description>
+            </property>
+        </propertyGroup>
+
+        <propertyGroup caption="Synchronization &amp; Events">
+            <property key="syncMode" type="enumeration" defaultValue="debounced">
+                <caption>Sync Mode</caption>
+                <description>Determines when changes in the editor are committed back to the Mendix attribute.</description>
+                <enumerationValues>
+                    <enumerationValue key="debounced">Debounced (Real-time auto-sync)</enumerationValue>
+                    <enumerationValue key="onBlur">On Blur (When editor loses focus)</enumerationValue>
+                </enumerationValues>
+            </property>
+            <property key="debounceDelay" type="integer" defaultValue="500">
+                <caption>Debounce Delay (ms)</caption>
+                <description>Milliseconds delay before committing keystrokes to Mendix when using Debounced mode.</description>
+            </property>
+            <property key="onChange" type="action" required="false">
+                <caption>On change</caption>
+                <description>Action (Nanoflow or Microflow) executed when the content changes and syncs.</description>
+            </property>
+        </propertyGroup>
+
+        <propertyGroup caption="Appearance &amp; Typography">
+            <property key="themePreset" type="enumeration" defaultValue="mediumSerif">
+                <caption>Typography Theme</caption>
+                <description>Choose the visual typography style for the editor.</description>
+                <enumerationValues>
+                    <enumerationValue key="mediumSerif">Medium Classic Serif (Charter/Georgia)</enumerationValue>
+                    <enumerationValue key="modernSans">Modern Clean Sans-Serif (Inter/System)</enumerationValue>
+                    <enumerationValue key="inheritMendix">Inherit Atlas UI Theme</enumerationValue>
+                </enumerationValues>
+            </property>
+            <property key="maxWidth" type="string" defaultValue="740px">
+                <caption>Max Content Width</caption>
+                <description>Maximum width of the writing canvas (e.g. 740px, 100%, 800px).</description>
+            </property>
+            <property key="minHeight" type="string" defaultValue="320px">
+                <caption>Minimum Height</caption>
+                <description>Minimum height of the editable area (e.g. 320px, 50vh).</description>
+            </property>
+        </propertyGroup>
+
+        <propertyGroup caption="Features &amp; Blocks">
+            <property key="enableBubbleMenu" type="boolean" defaultValue="true">
+                <caption>Inline Bubble Menu</caption>
+                <description>Shows floating formatting toolbar when text is highlighted.</description>
+            </property>
+            <property key="enableFloatingMenu" type="boolean" defaultValue="true">
+                <caption>Floating '+' Block Menu</caption>
+                <description>Shows the '+' block insertion button on empty paragraph lines.</description>
+            </property>
+            <property key="enableSlashCommands" type="boolean" defaultValue="true">
+                <caption>Slash ('/') Commands</caption>
+                <description>Allows typing '/' to quickly search and insert blocks.</description>
+            </property>
+            <property key="enableCodeBlocks" type="boolean" defaultValue="true">
+                <caption>Syntax-highlighted Code Blocks</caption>
+                <description>Enable code blocks with syntax highlighting and copy button.</description>
+            </property>
+            <property key="enableTables" type="boolean" defaultValue="true">
+                <caption>Tables</caption>
+                <description>Enable table insertion and row/column manipulation.</description>
+            </property>
+            <property key="enableCallouts" type="boolean" defaultValue="true">
+                <caption>Callout / Alert Boxes</caption>
+                <description>Enable colored info, tip, and warning banners.</description>
+            </property>
+            <property key="enableTaskLists" type="boolean" defaultValue="true">
+                <caption>Task / Check Lists</caption>
+                <description>Enable interactive to-do checkable items.</description>
+            </property>
+            <property key="enableMediaEmbeds" type="boolean" defaultValue="true">
+                <caption>Video Embeds</caption>
+                <description>Enable responsive YouTube and Vimeo video embedding via URL.</description>
+            </property>
+            <property key="enableImages" type="boolean" defaultValue="true">
+                <caption>Image Support</caption>
+                <description>Enable image embedding via URL, file upload, or drag-and-drop.</description>
+            </property>
+            <property key="enableReadingStats" type="boolean" defaultValue="true">
+                <caption>Reading Stats Footer</caption>
+                <description>Display word count, character count, and estimated reading time.</description>
+            </property>
+        </propertyGroup>
+
+        <propertyGroup caption="Media Upload">
+            <property key="imageUploadMode" type="enumeration" defaultValue="base64">
+                <caption>Image Storage Mode</caption>
+                <description>How uploaded or pasted image files should be handled.</description>
+                <enumerationValues>
+                    <enumerationValue key="base64">Inline Base64 (Self-contained in HTML string)</enumerationValue>
+                    <enumerationValue key="urlOnly">URL Only (Prompt user for image web URL)</enumerationValue>
+                    <enumerationValue key="customHandler">Custom Upload Action (Call Nanoflow/Microflow)</enumerationValue>
+                </enumerationValues>
+            </property>
+            <property key="onImageUpload" type="action" required="false">
+                <caption>On Image Upload Action</caption>
+                <description>Nanoflow or Microflow called when an image is selected if using Custom Upload Mode.</description>
+            </property>
+        </propertyGroup>
+    </properties>
+</widget>

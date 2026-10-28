@@ -1,0 +1,948 @@
+/* ==========================================================================
+   VikEditor - Medium-Style Blog WYSIWYG Editor for Mendix 10
+   ========================================================================== */
+
+$vik-font-serif: "Charter", "Georgia", "Cambria", "Times New Roman", serif;
+$vik-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$vik-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+$vik-bubble-bg: #1e293b;
+$vik-bubble-text: #f8fafc;
+$vik-bubble-hover: rgba(255, 255, 255, 0.16);
+$vik-bubble-active: #38bdf8;
+
+$vik-border-color: #e2e8f0;
+$vik-text-main: #1e293b;
+$vik-text-muted: #64748b;
+$vik-accent: #0284c7;
+
+// --- Root Container ---
+.vik-editor-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    box-sizing: border-box;
+
+    * {
+        box-sizing: border-box;
+    }
+}
+
+.vik-editor-root {
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: $vik-text-main;
+
+    // --- Typography Themes ---
+    &.vik-theme-mediumSerif {
+        .ProseMirror {
+            font-family: $vik-font-serif;
+            font-size: 19px;
+            line-height: 1.78;
+            letter-spacing: -0.003em;
+
+            h1, h2, h3, h4 {
+                font-family: $vik-font-sans;
+                letter-spacing: -0.02em;
+            }
+        }
+    }
+
+    &.vik-theme-modernSans {
+        .ProseMirror {
+            font-family: $vik-font-sans;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+    }
+
+    &.vik-theme-inheritMendix {
+        .ProseMirror {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: 1.65;
+        }
+    }
+}
+
+// --- Canvas & TipTap ProseMirror Elements ---
+.vik-editor-canvas {
+    width: 100%;
+    position: relative;
+    outline: none;
+
+    .ProseMirror {
+        outline: none;
+        min-height: 280px;
+        padding: 16px 4px;
+
+        > * + * {
+            margin-top: 1.25em;
+        }
+
+        // Headings
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+
+        h2 {
+            font-size: 1.65rem;
+            font-weight: 600;
+            line-height: 1.35;
+            margin-top: 1.75rem;
+            margin-bottom: 0.65rem;
+            color: #1e293b;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+        }
+
+        // Medium Blockquote
+        blockquote {
+            border-left: 3px solid #0f172a;
+            padding-left: 1.25rem;
+            margin-left: 0;
+            margin-right: 0;
+            font-style: italic;
+            color: #334155;
+            font-size: 1.15em;
+            line-height: 1.7;
+        }
+
+        // Inline Code
+        code {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: $vik-font-mono;
+            font-size: 0.88em;
+        }
+
+        // Links
+        .vik-link {
+            color: $vik-accent;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            transition: color 0.15s ease;
+
+            &:hover {
+                color: #0369a1;
+            }
+        }
+
+        // Divider
+        hr {
+            border: none;
+            border-top: 1px solid #cbd5e1;
+            margin: 2.5rem 0;
+            position: relative;
+            text-align: center;
+
+            &::after {
+                content: "...";
+                display: inline-block;
+                position: relative;
+                top: -0.85em;
+                font-size: 1.5rem;
+                letter-spacing: 0.75em;
+                padding: 0 0.5rem;
+                background-color: #ffffff;
+                color: #94a3b8;
+            }
+        }
+
+        // Lists
+        ul, ol {
+            padding-left: 1.75rem;
+            margin-bottom: 1.25rem;
+
+            li {
+                margin-bottom: 0.4rem;
+            }
+        }
+
+        // Task Lists
+        .vik-task-list {
+            list-style: none;
+            padding-left: 0;
+
+            .vik-task-item {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 0.4rem;
+
+                > label {
+                    flex: 0 0 auto;
+                    margin-right: 0.65rem;
+                    user-select: none;
+                    cursor: pointer;
+
+                    input[type="checkbox"] {
+                        cursor: pointer;
+                        width: 16px;
+                        height: 16px;
+                        accent-color: $vik-accent;
+                    }
+                }
+
+                > div {
+                    flex: 1 1 auto;
+                }
+
+                &[data-checked="true"] > div {
+                    text-decoration: line-through;
+                    color: $vik-text-muted;
+                }
+            }
+        }
+
+        // Code Block
+        pre.vik-code-block {
+            background: #0f172a;
+            color: #f8fafc;
+            font-family: $vik-font-mono;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+
+            code {
+                background: none;
+                color: inherit;
+                padding: 0;
+                font-size: inherit;
+            }
+        }
+
+        // Callout Banner
+        .vik-callout {
+            display: flex;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid #0284c7;
+            background-color: #f0f9ff;
+            color: #0369a1;
+
+            &.vik-callout-warning {
+                border-left-color: #f59e0b;
+                background-color: #fffbeb;
+                color: #b45309;
+            }
+
+            &.vik-callout-tip {
+                border-left-color: #10b981;
+                background-color: #ecfdf5;
+                color: #047857;
+            }
+
+            &.vik-callout-danger {
+                border-left-color: #ef4444;
+                background-color: #fef2f2;
+                color: #b91c1c;
+            }
+
+            p {
+                margin: 0;
+                color: inherit;
+            }
+        }
+
+        // Tables
+        .vik-table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+
+            td, th {
+                min-width: 1em;
+                border: 1px solid #cbd5e1;
+                padding: 8px 12px;
+                vertical-align: top;
+                box-sizing: border-box;
+                position: relative;
+
+                > * {
+                    margin-bottom: 0;
+                }
+            }
+
+            th {
+                font-weight: 600;
+                text-align: left;
+                background-color: #f8fafc;
+            }
+
+            .selectedCell:after {
+                z-index: 2;
+                position: absolute;
+                content: "";
+                left: 0; right: 0; top: 0; bottom: 0;
+                background: rgba(200, 225, 255, 0.4);
+                pointer-events: none;
+            }
+        }
+
+        // Images & Video
+        .vik-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            display: block;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .vik-video-embed {
+            max-width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem auto;
+            display: block;
+            aspect-ratio: 16 / 9;
+        }
+
+        // Placeholder
+        p.is-editor-empty:first-child::before {
+            color: #94a3b8;
+            content: attr(data-placeholder);
+            float: left;
+            height: 0;
+            pointer-events: none;
+            font-style: italic;
+        }
+    }
+}
+
+// --- Medium Bubble Menu (Inline Floating Selection) ---
+.vik-bubble-menu {
+    background-color: $vik-bubble-bg;
+    color: $vik-bubble-text;
+    border-radius: 8px;
+    padding: 4px 6px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    z-index: 9999;
+    user-select: none;
+
+    .vik-bubble-btn-row {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .vik-bubble-btn {
+        background: transparent;
+        border: none;
+        color: #cbd5e1;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+
+        &:hover {
+            background-color: $vik-bubble-hover;
+            color: #ffffff;
+        }
+
+        &.is-active {
+            color: $vik-bubble-active;
+            background-color: rgba(56, 189, 248, 0.15);
+        }
+    }
+
+    .vik-bubble-divider {
+        width: 1px;
+        height: 18px;
+        background-color: rgba(255, 255, 255, 0.15);
+        margin: 0 4px;
+    }
+
+    // Link input morph
+    .vik-bubble-link-input-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px;
+
+        .vik-bubble-link-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 13px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            outline: none;
+            width: 220px;
+
+            &::placeholder {
+                color: #94a3b8;
+            }
+
+            &:focus {
+                border-color: $vik-bubble-active;
+            }
+        }
+
+        .vik-bubble-btn-apply {
+            color: #10b981;
+            &:hover { background-color: rgba(16, 185, 129, 0.2); }
+        }
+
+        .vik-bubble-btn-remove {
+            color: #ef4444;
+            &:hover { background-color: rgba(239, 68, 68, 0.2); }
+        }
+    }
+}
+
+// --- Medium Floating '+' Block Menu ---
+.vik-floating-menu-container {
+    z-index: 999;
+}
+
+.vik-floating-menu {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    .vik-floating-trigger-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1.5px solid #94a3b8;
+        background: #ffffff;
+        color: #64748b;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s ease, color 0.15s ease;
+
+        &:hover {
+            border-color: #0f172a;
+            color: #0f172a;
+        }
+
+        &.is-active {
+            transform: rotate(45deg);
+            border-color: #0f172a;
+            color: #0f172a;
+        }
+    }
+
+    .vik-floating-actions-tray {
+        position: absolute;
+        left: 42px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        padding: 4px 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        white-space: nowrap;
+        animation: vikSlideIn 0.15s ease-out;
+
+        .vik-floating-action-btn {
+            background: transparent;
+            border: none;
+            color: #475569;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.15s ease;
+
+            &:hover {
+                background: #f1f5f9;
+                color: #0f172a;
+            }
+        }
+    }
+}
+
+@keyframes vikSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+// --- Slash Commands Popup Menu ---
+.tippy-box[data-theme~="vik-slash"] {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    .tippy-content {
+        padding: 0;
+    }
+}
+
+.vik-slash-menu {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    width: 280px;
+    max-height: 360px;
+    overflow-y: auto;
+    padding: 6px;
+    z-index: 10000;
+
+    .vik-slash-menu-header {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        color: #94a3b8;
+        padding: 6px 10px 4px 10px;
+    }
+
+    .vik-slash-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: none;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.1s ease;
+
+        &:hover,
+        &.is-selected {
+            background: #f1f5f9;
+        }
+
+        .vik-slash-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #334155;
+            flex-shrink: 0;
+        }
+
+        .vik-slash-item-content {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            .vik-slash-item-title {
+                font-size: 13.5px;
+                font-weight: 500;
+                color: #0f172a;
+            }
+
+            .vik-slash-item-desc {
+                font-size: 11.5px;
+                color: #64748b;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+
+    .vik-slash-menu-empty {
+        padding: 16px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 13px;
+    }
+}
+
+// --- Table Context Menu ---
+.vik-table-menu {
+    background-color: $vik-bubble-bg;
+    color: #ffffff;
+    border-radius: 6px;
+    padding: 3px 6px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+
+    .vik-table-menu-content {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+
+        .vik-table-menu-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+            color: #94a3b8;
+            padding: 0 4px;
+        }
+
+        .vik-table-menu-divider {
+            width: 1px;
+            height: 14px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 0 2px;
+        }
+
+        .vik-table-btn {
+            background: transparent;
+            border: none;
+            color: #f1f5f9;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            &.vik-table-btn-danger {
+                color: #f87171;
+                &:hover {
+                    background: rgba(239, 68, 68, 0.25);
+                }
+            }
+        }
+    }
+}
+
+// --- Reading Stats Footer ---
+.vik-editor-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 12px 0 8px 0;
+    border-top: 1px solid #f1f5f9;
+    margin-top: 16px;
+
+    .vik-reading-stats {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        color: #94a3b8;
+
+        strong {
+            color: #64748b;
+        }
+
+        .vik-stat-dot {
+            font-size: 10px;
+        }
+    }
+}
+
+// --- Media Modal Dialog ---
+.vik-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    animation: vikFadeIn 0.15s ease-out;
+}
+
+.vik-modal-dialog {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: vikScaleUp 0.15s ease-out;
+
+    .vik-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #e2e8f0;
+
+        .vik-modal-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .vik-modal-close-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+
+            &:hover {
+                color: #0f172a;
+                background: #f1f5f9;
+            }
+        }
+    }
+
+    .vik-modal-tabs {
+        display: flex;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+
+        .vik-modal-tab {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+
+            &.is-active {
+                color: $vik-accent;
+                border-bottom-color: $vik-accent;
+                background: #ffffff;
+            }
+        }
+    }
+
+    .vik-modal-body {
+        padding: 20px;
+
+        .vik-dropzone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 32px 16px;
+            text-align: center;
+            cursor: pointer;
+            background: #fafafa;
+            transition: all 0.15s ease;
+
+            &:hover,
+            &.is-dragover {
+                border-color: $vik-accent;
+                background: #f0f9ff;
+            }
+
+            .vik-dropzone-icon {
+                color: #94a3b8;
+                margin-bottom: 8px;
+            }
+
+            .vik-dropzone-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: #1e293b;
+            }
+
+            .vik-dropzone-sub {
+                font-size: 12px;
+                color: #94a3b8;
+                margin-top: 4px;
+            }
+        }
+
+        .vik-form-group {
+            margin-bottom: 16px;
+
+            .vik-form-label {
+                display: block;
+                font-size: 13px;
+                font-weight: 500;
+                color: #334155;
+                margin-bottom: 6px;
+            }
+
+            .vik-form-input {
+                width: 100%;
+                padding: 9px 12px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.15s ease;
+
+                &:focus {
+                    border-color: $vik-accent;
+                    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+                }
+            }
+        }
+
+        .vik-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+
+            .vik-btn {
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 13.5px;
+                font-weight: 500;
+                cursor: pointer;
+                border: 1px solid transparent;
+
+                &.vik-btn-secondary {
+                    background: #f1f5f9;
+                    color: #475569;
+                    &:hover { background: #e2e8f0; }
+                }
+
+                &.vik-btn-primary {
+                    background: $vik-accent;
+                    color: #ffffff;
+                    &:hover { background: #0369a1; }
+                }
+            }
+        }
+    }
+}
+
+@keyframes vikFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes vikScaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+// --- Loading State ---
+.vik-editor-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 24px;
+    color: #64748b;
+    font-size: 14px;
+
+    .vik-loading-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #e2e8f0;
+        border-top-color: $vik-accent;
+        border-radius: 50%;
+        animation: vikSpin 0.8s linear infinite;
+    }
+}
+
+@keyframes vikSpin {
+    to { transform: rotate(360deg); }
+}
+
+// --- Dark Mode Adaptability (Mendix Atlas UI dark mode) ---
+@media (prefers-color-scheme: dark) {
+    .vik-editor-root {
+        color: #f1f5f9;
+
+        .vik-editor-canvas .ProseMirror {
+            h1, h2, h3 { color: #f8fafc; }
+            blockquote {
+                border-left-color: #64748b;
+                color: #cbd5e1;
+            }
+            code {
+                background-color: #1e293b;
+                color: #f1f5f9;
+            }
+            hr::after {
+                background-color: #0f172a;
+            }
+            .vik-table {
+                border-color: #334155;
+                td, th { border-color: #334155; }
+                th { background-color: #1e293b; }
+            }
+            p.is-editor-empty:first-child::before {
+                color: #64748b;
+            }
+        }
+
+        .vik-floating-menu .vik-floating-trigger-btn {
+            background: #1e293b;
+            border-color: #475569;
+            color: #cbd5e1;
+
+            &:hover, &.is-active {
+                border-color: #f8fafc;
+                color: #f8fafc;
+            }
+        }
+
+        .vik-floating-actions-tray {
+            background: #1e293b;
+            border-color: #334155;
+
+            .vik-floating-action-btn {
+                color: #cbd5e1;
+                &:hover {
+                    background: #334155;
+                    color: #ffffff;
+                }
+            }
+        }
+
+        .vik-editor-footer {
+            border-top-color: #1e293b;
+        }
+    }
+}
