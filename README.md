@@ -9,6 +9,7 @@ A distraction-free, Medium-inspired block-style and inline-toolbar WYSIWYG edito
 - **Inline Floating Selection Toolbar (Medium Bubble Menu)**: Highlight any text to format with Bold, Italic, Underline, Strikethrough, Code, Links, Headings (H1/H2/H3), Blockquotes, and Callout alerts.
 - **Empty-line '+' Block Adder**: Hover or place cursor on an empty line to click the expandable '+' tray for inserting images, videos, tables, code blocks, dividers, and callouts.
 - **Slash Commands (`/`)**: Type `/` anywhere to trigger a searchable command palette for quick block creation without lifting your hands from the keyboard.
+- **Automatic Word Document (.docx) to Blog Converter**: Drag and drop any Microsoft Word `.docx` file onto the editor canvas, type `/docx` in the slash command palette, or select it from the `+` block menu. Converts Word headings, text styling, lists, tables, and embedded images directly into native TipTap blog blocks.
 - **Rich Content Blocks**:
   - **Syntax-Highlighted Code Blocks**: Built-in support for JavaScript, TypeScript, Python, HTML, CSS, SQL, Java, Bash, and JSON with `lowlight`.
   - **Interactive Tables**: Responsive tables with contextual floating controls to add/remove rows and columns and toggle headers.
@@ -100,6 +101,7 @@ Copy the `.mpk` file into your Mendix project's `widgets/` folder, then press **
 | **Features** | `enableTaskLists` | Boolean | `true` | Checkable task list items. |
 | **Features** | `enableMediaEmbeds`| Boolean | `true` | Responsive YouTube and Vimeo embeds. |
 | **Features** | `enableImages` | Boolean | `true` | Images via upload or URL. |
+| **Features** | `enableDocxImport` | Boolean | `true` | Auto-convert dropped or selected Word (.docx) files. |
 | **Features** | `enableReadingStats`| Boolean | `true` | Footer showing words, characters, read time. |
 | **Media Upload** | `imageUploadMode` | Enumeration | `base64` | `base64` (inlined), `urlOnly`, or `customHandler`. |
 | **Media Upload** | `onImageUpload` | Action | Optional | Custom Microflow/Nanoflow upload handler. |
