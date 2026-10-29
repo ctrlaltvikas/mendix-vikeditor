@@ -34,6 +34,7 @@ export interface VikEditorContainerProps {
     enableTaskLists: boolean;
     enableMediaEmbeds: boolean;
     enableImages: boolean;
+    enableDocxImport: boolean;
     enableReadingStats: boolean;
     imageUploadMode: ImageUploadModeEnum;
     onImageUpload?: ActionValue;
@@ -67,6 +68,7 @@ export interface VikEditorPreviewProps {
     enableTaskLists: boolean;
     enableMediaEmbeds: boolean;
     enableImages: boolean;
+    enableDocxImport: boolean;
     enableReadingStats: boolean;
     imageUploadMode: ImageUploadModeEnum;
     onImageUpload: {} | null;

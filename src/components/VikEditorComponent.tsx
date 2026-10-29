@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -24,6 +24,7 @@ import { TableMenu } from "./TableMenu";
 import { MediaDialog, MediaDialogType } from "./MediaDialog";
 import { ReadingStats } from "./ReadingStats";
 import { ThemePresetEnum, ImageUploadModeEnum } from "../../typings/VikEditorProps";
+import { convertDocxToHtml } from "../utils/docxConverter";
 
 // Initialize syntax highlighter
 const lowlight = createLowlight(common);
@@ -46,6 +47,7 @@ export interface VikEditorComponentProps {
     enableTaskLists?: boolean;
     enableMediaEmbeds?: boolean;
     enableImages?: boolean;
+    enableDocxImport?: boolean;
     enableReadingStats?: boolean;
     imageUploadMode?: ImageUploadModeEnum;
     onTriggerMendixUpload?: () => void;
@@ -70,12 +72,16 @@ export const VikEditorComponent: React.FC<VikEditorComponentProps> = ({
     enableTaskLists = true,
     enableMediaEmbeds = true,
     enableImages = true,
+    enableDocxImport = true,
     enableReadingStats = true,
     imageUploadMode = "base64",
     onTriggerMendixUpload,
     className = ""
 }) => {
     const [mediaDialogType, setMediaDialogType] = useState<MediaDialogType>(null);
+    const [isConvertingDocx, setIsConvertingDocx] = useState(false);
+    const [docxNotification, setDocxNotification] = useState<string | null>(null);
+    const docxFileInputRef = useRef<HTMLInputElement>(null);
 
     const openImageDialog = useCallback(() => {
         setMediaDialogType("image");
@@ -87,6 +93,10 @@ export const VikEditorComponent: React.FC<VikEditorComponentProps> = ({
 
     const closeMediaDialog = useCallback(() => {
         setMediaDialogType(null);
+    }, []);
+
+    const triggerDocxImport = useCallback(() => {
+        docxFileInputRef.current?.click();
     }, []);
 
     // Build extensions conditionally
@@ -198,8 +208,10 @@ export const VikEditorComponent: React.FC<VikEditorComponentProps> = ({
                     enableCodeBlocks,
                     enableCallouts,
                     enableTaskLists,
+                    enableDocxImport,
                     onTriggerImageUpload: openImageDialog,
-                    onTriggerVideoEmbed: openVideoDialog
+                    onTriggerVideoEmbed: openVideoDialog,
+                    onTriggerDocxImport: triggerDocxImport
                 })
             );
         }
@@ -214,8 +226,10 @@ export const VikEditorComponent: React.FC<VikEditorComponentProps> = ({
         enableMediaEmbeds,
         enableCallouts,
         enableSlashCommands,
+        enableDocxImport,
         openImageDialog,
-        openVideoDialog
+        openVideoDialog,
+        triggerDocxImport
     ]);
 
     const editor = useEditor({
@@ -270,13 +284,91 @@ export const VikEditorComponent: React.FC<VikEditorComponentProps> = ({
         [editor]
     );
 
+    const handleDocxFile = useCallback(
+        async (file: File) => {
+            if (!file.name.toLowerCase().endsWith(".docx")) {
+                alert("Please select a Microsoft Word (.docx) file.");
+                return;
+            }
+
+            try {
+                setIsConvertingDocx(true);
+                setDocxNotification(`Converting "${file.name}" to blog format...`);
+                const { html } = await convertDocxToHtml(file);
+
+                if (editor) {
+                    if (editor.isEmpty) {
+                        editor.commands.setContent(html);
+                    } else {
+                        editor.commands.insertContent(html);
+                    }
+                }
+
+                setDocxNotification(`Successfully converted "${file.name}" to blog format!`);
+                setTimeout(() => setDocxNotification(null), 3500);
+            } catch (err: any) {
+                console.error("DOCX conversion error:", err);
+                setDocxNotification(`Conversion error: ${err.message || "Failed to convert document"}`);
+                setTimeout(() => setDocxNotification(null), 5000);
+            } finally {
+                setIsConvertingDocx(false);
+            }
+        },
+        [editor]
+    );
+
+    const handleDragOver = useCallback((e: React.DragEvent) => {
+        if (e.dataTransfer.types.includes("Files")) {
+            e.preventDefault();
+        }
+    }, []);
+
+    const handleDrop = useCallback(
+        (e: React.DragEvent) => {
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                const file = files[0];
+                if (file.name.toLowerCase().endsWith(".docx")) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDocxFile(file);
+                }
+            }
+        },
+        [handleDocxFile]
+    );
+
     const themeClass = `vik-theme-${themePreset}`;
 
     return (
         <div
             className={`vik-editor-root ${themeClass} ${readOnly ? "is-readonly" : ""} ${className}`}
             style={{ maxWidth, minHeight }}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
         >
+            {/* Hidden file input for .docx importing */}
+            <input
+                ref={docxFileInputRef}
+                type="file"
+                accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                style={{ display: "none" }}
+                onChange={e => {
+                    if (e.target.files && e.target.files[0]) {
+                        handleDocxFile(e.target.files[0]);
+                        e.target.value = "";
+                    }
+                }}
+            />
+
+            {/* Notification toast during/after conversion */}
+            {docxNotification && (
+                <div className="vik-docx-toast">
+                    {isConvertingDocx && <div className="vik-loading-spinner" style={{ width: 14, height: 14 }} />}
+                    <span>{docxNotification}</span>
+                </div>
+            )}
+
             {editor && !readOnly && enableBubbleMenu && (
                 <BubbleToolbar editor={editor} enableCallouts={enableCallouts} />
             )}
@@ -290,8 +382,10 @@ export const VikEditorComponent: React.FC<VikEditorComponentProps> = ({
                     enableCodeBlocks={enableCodeBlocks}
                     enableCallouts={enableCallouts}
                     enableTaskLists={enableTaskLists}
+                    enableDocxImport={enableDocxImport}
                     onTriggerImageUpload={openImageDialog}
                     onTriggerVideoEmbed={openVideoDialog}
+                    onTriggerDocxImport={triggerDocxImport}
                 />
             )}
 

@@ -38,6 +38,31 @@ $vik-accent: #0284c7;
     flex-direction: column;
     color: $vik-text-main;
 
+    // --- Docx Conversion Toast ---
+    .vik-docx-toast {
+        position: absolute;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f172a;
+        color: #ffffff;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+        z-index: 10000;
+        animation: vikSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        white-space: nowrap;
+
+        .vik-loading-spinner {
+            border-top-color: #38bdf8;
+        }
+    }
+
     // --- Typography Themes ---
     &.vik-theme-mediumSerif {
         .ProseMirror {

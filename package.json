@@ -49,6 +49,7 @@
     "@tiptap/starter-kit": "^2.11.5",
     "@tiptap/suggestion": "^2.11.5",
     "lowlight": "^3.3.0",
+    "mammoth": "^1.13.0",
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {

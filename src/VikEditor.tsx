@@ -23,6 +23,7 @@ export default function VikEditor(props: VikEditorContainerProps) {
         enableTaskLists,
         enableMediaEmbeds,
         enableImages,
+        enableDocxImport,
         enableReadingStats,
         imageUploadMode,
         onImageUpload,
@@ -148,6 +149,7 @@ export default function VikEditor(props: VikEditorContainerProps) {
                 enableTaskLists={enableTaskLists}
                 enableMediaEmbeds={enableMediaEmbeds}
                 enableImages={enableImages}
+                enableDocxImport={enableDocxImport}
                 enableReadingStats={enableReadingStats}
                 imageUploadMode={imageUploadMode}
                 onTriggerMendixUpload={handleTriggerMendixUpload}

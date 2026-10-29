@@ -17,7 +17,8 @@ import {
     TableIcon,
     ImageIcon,
     VideoIcon,
-    DividerIcon
+    DividerIcon,
+    WordDocIcon
 } from "./Icons";
 
 export interface SlashCommandsOptions {
@@ -28,8 +29,10 @@ export interface SlashCommandsOptions {
     enableCodeBlocks?: boolean;
     enableCallouts?: boolean;
     enableTaskLists?: boolean;
+    enableDocxImport?: boolean;
     onTriggerImageUpload?: () => void;
     onTriggerVideoEmbed?: () => void;
+    onTriggerDocxImport?: () => void;
 }
 
 export const getSuggestionItems = (
@@ -41,8 +44,10 @@ export const getSuggestionItems = (
         enableCodeBlocks?: boolean;
         enableCallouts?: boolean;
         enableTaskLists?: boolean;
+        enableDocxImport?: boolean;
         onTriggerImageUpload?: () => void;
         onTriggerVideoEmbed?: () => void;
+        onTriggerDocxImport?: () => void;
     }
 ): CommandItem[] => {
     const items: CommandItem[] = [
@@ -153,6 +158,18 @@ export const getSuggestionItems = (
         });
     }
 
+    if (options.enableDocxImport && options.onTriggerDocxImport) {
+        items.push({
+            title: "Import Word (.docx)",
+            description: "Convert a Word document into blog blocks automatically",
+            icon: <WordDocIcon size={18} />,
+            command: ({ editor, range }) => {
+                editor.chain().focus().deleteRange(range).run();
+                options.onTriggerDocxImport!();
+            }
+        });
+    }
+
     if (options.enableMediaEmbeds && options.onTriggerVideoEmbed) {
         items.push({
             title: "Video Embed",
@@ -184,8 +201,10 @@ export const createSlashCommandsExtension = (options: {
     enableCodeBlocks?: boolean;
     enableCallouts?: boolean;
     enableTaskLists?: boolean;
+    enableDocxImport?: boolean;
     onTriggerImageUpload?: () => void;
     onTriggerVideoEmbed?: () => void;
+    onTriggerDocxImport?: () => void;
 }) => {
     return Extension.create<SlashCommandsOptions>({
         name: "slashCommands",

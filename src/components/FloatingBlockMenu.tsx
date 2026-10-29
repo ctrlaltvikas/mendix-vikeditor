@@ -10,7 +10,8 @@ import {
     DividerIcon,
     BulletListIcon,
     OrderedListIcon,
-    TaskListIcon
+    TaskListIcon,
+    WordDocIcon
 } from "./Icons";
 
 interface FloatingBlockMenuProps {
@@ -21,8 +22,10 @@ interface FloatingBlockMenuProps {
     enableCodeBlocks?: boolean;
     enableCallouts?: boolean;
     enableTaskLists?: boolean;
+    enableDocxImport?: boolean;
     onTriggerImageUpload: () => void;
     onTriggerVideoEmbed: () => void;
+    onTriggerDocxImport?: () => void;
 }
 
 export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
@@ -33,8 +36,10 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
     enableCodeBlocks = true,
     enableCallouts = true,
     enableTaskLists = true,
+    enableDocxImport = true,
     onTriggerImageUpload,
-    onTriggerVideoEmbed
+    onTriggerVideoEmbed,
+    onTriggerDocxImport
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -118,6 +123,22 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                             >
                                 <ImageIcon size={16} />
                                 <span>Image</span>
+                            </button>
+                        )}
+
+                        {enableDocxImport && onTriggerDocxImport && (
+                            <button
+                                type="button"
+                                className="vik-floating-action-btn"
+                                onMouseDown={e => e.preventDefault()}
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    onTriggerDocxImport();
+                                }}
+                                title="Import Word Document (.docx)"
+                            >
+                                <WordDocIcon size={16} />
+                                <span>Word (.docx)</span>
                             </button>
                         )}
 

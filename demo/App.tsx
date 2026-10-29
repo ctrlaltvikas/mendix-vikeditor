@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { VikEditorComponent } from "../src/components/VikEditorComponent";
 import { ThemePresetEnum } from "../typings/VikEditorProps";
+import { convertDocxToHtml } from "../src/utils/docxConverter";
 import "../src/ui/VikEditor.scss";
 
 const SAMPLE_CONTENT = `
@@ -42,12 +43,35 @@ export const App: React.FC = () => {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState<"editor" | "html">("editor");
 
+    const [isImportingDocx, setIsImportingDocx] = useState(false);
+    const topDocxInputRef = useRef<HTMLInputElement>(null);
+
     const handleClear = () => {
         setContent("<p></p>");
     };
 
     const handleResetSample = () => {
         setContent(SAMPLE_CONTENT);
+    };
+
+    const handleDocxImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith(".docx")) {
+            alert("Please select a Microsoft Word (.docx) document.");
+            return;
+        }
+
+        try {
+            setIsImportingDocx(true);
+            const { html } = await convertDocxToHtml(file);
+            setContent(html);
+        } catch (err: any) {
+            alert(`Error converting Word document: ${err.message || "Unknown error"}`);
+        } finally {
+            setIsImportingDocx(false);
+            if (e.target) e.target.value = "";
+        }
     };
 
     return (
@@ -152,6 +176,35 @@ export const App: React.FC = () => {
                     </div>
 
                     {/* Actions */}
+                    <input
+                        ref={topDocxInputRef}
+                        type="file"
+                        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        style={{ display: "none" }}
+                        onChange={handleDocxImport}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => topDocxInputRef.current?.click()}
+                        disabled={isImportingDocx}
+                        style={{
+                            padding: "6px 12px",
+                            borderRadius: "6px",
+                            border: "1px solid #2563eb",
+                            background: "#2563eb",
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            cursor: isImportingDocx ? "wait" : "pointer",
+                            color: "#ffffff",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                        }}
+                        title="Convert and open any Microsoft Word .docx file into blog format"
+                    >
+                        <span>📄</span>
+                        {isImportingDocx ? "Converting Word..." : "Import .docx"}
+                    </button>
                     <button
                         type="button"
                         onClick={handleResetSample}
@@ -186,7 +239,33 @@ export const App: React.FC = () => {
             </header>
 
             {/* Main Content Area */}
-            <main style={{ flex: 1, padding: "40px 20px", display: "flex", justifyContent: "center" }}>
+            <main style={{ flex: 1, padding: "24px 20px 40px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                {/* Word Doc & Slash Command Tip Banner */}
+                <div
+                    style={{
+                        width: "100%",
+                        maxWidth: "840px",
+                        marginBottom: "16px",
+                        padding: "10px 16px",
+                        background: "#eff6ff",
+                        border: "1px solid #bfdbfe",
+                        borderRadius: "8px",
+                        fontSize: "13px",
+                        color: "#1e40af",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ fontSize: "16px" }}>💡</span>
+                        <span>
+                            <strong>Word to Blog Conversion:</strong> Drag & drop any <code>.docx</code> file here, or type <code>/docx</code>, or use the <code>+</code> menu to auto-convert Word documents into blog posts!
+                        </span>
+                    </div>
+                    <span style={{ fontSize: "11px", color: "#60a5fa", whiteSpace: "nowrap" }}>v1.0.0</span>
+                </div>
+
                 <div
                     style={{
                         width: "100%",

@@ -94,6 +94,10 @@
                 <caption>Image Support</caption>
                 <description>Enable image embedding via URL, file upload, or drag-and-drop.</description>
             </property>
+            <property key="enableDocxImport" type="boolean" defaultValue="true">
+                <caption>Word (.docx) Import</caption>
+                <description>Automatically convert uploaded or dropped Microsoft Word (.docx) documents into native blog blocks.</description>
+            </property>
             <property key="enableReadingStats" type="boolean" defaultValue="true">
                 <caption>Reading Stats Footer</caption>
                 <description>Display word count, character count, and estimated reading time.</description>
