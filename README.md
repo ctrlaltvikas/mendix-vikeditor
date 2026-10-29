@@ -30,9 +30,20 @@ A distraction-free, Medium-inspired block-style and inline-toolbar WYSIWYG edito
 
 ## 🚀 Quick Start for Mendix Developers
 
-### 1. Build the Widget Package (.mpk)
+### 1. Interactive Browser Playground (Testing & Debugging)
 
-To install dependencies and build the `.mpk` package:
+To run, debug, and test the editor directly in your browser with live HMR:
+
+```bash
+# Start local Vite playground
+npm run dev
+```
+
+Then open `http://localhost:5173` in your browser. The playground provides live theme switching, read-only toggling, sample blog post loading, and real-time serialized HTML output inspection.
+
+### 2. Build the Widget Package (.mpk)
+
+To compile the production `.mpk` widget package for Mendix:
 
 ```bash
 # Install dependencies

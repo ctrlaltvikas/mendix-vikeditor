@@ -54,6 +54,9 @@ export const BubbleToolbar: React.FC<BubbleToolbarProps> = ({ editor, enableCall
         if (!editor.isEditable) {
             return false;
         }
+        if (isLinkInputOpen) {
+            return true;
+        }
         const { state } = editor;
         const { selection } = state;
         const { empty } = selection;
@@ -65,7 +68,7 @@ export const BubbleToolbar: React.FC<BubbleToolbarProps> = ({ editor, enableCall
             return false;
         }
         return true;
-    }, [editor]);
+    }, [editor, isLinkInputOpen]);
 
     return (
         <BubbleMenu
@@ -74,7 +77,8 @@ export const BubbleToolbar: React.FC<BubbleToolbarProps> = ({ editor, enableCall
                 duration: 150,
                 animation: "shift-away",
                 placement: "top",
-                offset: [0, 10]
+                offset: [0, 10],
+                interactive: true
             }}
             shouldShow={shouldShow}
             className="vik-bubble-menu"

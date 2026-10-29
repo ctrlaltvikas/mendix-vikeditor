@@ -51,7 +51,7 @@ export const CalloutExtension = Node.create({
             setCallout:
                 attributes =>
                 ({ commands }) => {
-                    return commands.setNode(this.name, attributes);
+                    return commands.wrapIn(this.name, attributes);
                 },
             toggleCallout:
                 attributes =>
@@ -63,6 +63,21 @@ export const CalloutExtension = Node.create({
                 ({ commands }) => {
                     return commands.lift(this.name);
                 }
+        };
+    },
+
+    addKeyboardShortcuts() {
+        return {
+            Backspace: () => {
+                const { empty, $anchor } = this.editor.state.selection;
+                const isAtStart = $anchor.parentOffset === 0;
+
+                if (!empty || !isAtStart) {
+                    return false;
+                }
+
+                return this.editor.commands.lift(this.name);
+            }
         };
     }
 });

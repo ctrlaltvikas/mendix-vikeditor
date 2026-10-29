@@ -79,7 +79,16 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
             tippyOptions={{
                 duration: 150,
                 placement: "left",
-                offset: [-12, 0]
+                offset: [-12, 0],
+                interactive: true
+            }}
+            shouldShow={({ state }) => {
+                if (isOpen) return true;
+                const { selection } = state;
+                const { $from, empty } = selection;
+                if (!empty) return false;
+                const node = $from.parent;
+                return node.isTextblock && node.content.size === 0;
             }}
             className="vik-floating-menu-container"
         >
@@ -87,6 +96,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                 <button
                     type="button"
                     className={`vik-floating-trigger-btn ${isOpen ? "is-active" : ""}`}
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => setIsOpen(!isOpen)}
                     title={isOpen ? "Close block menu" : "Add a block"}
                 >
@@ -99,6 +109,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                             <button
                                 type="button"
                                 className="vik-floating-action-btn"
+                                onMouseDown={e => e.preventDefault()}
                                 onClick={() => {
                                     setIsOpen(false);
                                     onTriggerImageUpload();
@@ -114,6 +125,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                             <button
                                 type="button"
                                 className="vik-floating-action-btn"
+                                onMouseDown={e => e.preventDefault()}
                                 onClick={() => {
                                     setIsOpen(false);
                                     onTriggerVideoEmbed();
@@ -129,6 +141,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                             <button
                                 type="button"
                                 className="vik-floating-action-btn"
+                                onMouseDown={e => e.preventDefault()}
                                 onClick={insertTable}
                                 title="Insert 3x3 Table"
                             >
@@ -141,6 +154,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                             <button
                                 type="button"
                                 className="vik-floating-action-btn"
+                                onMouseDown={e => e.preventDefault()}
                                 onClick={insertCodeBlock}
                                 title="Insert Code Block"
                             >
@@ -153,6 +167,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                             <button
                                 type="button"
                                 className="vik-floating-action-btn"
+                                onMouseDown={e => e.preventDefault()}
                                 onClick={insertCallout}
                                 title="Insert Callout Alert"
                             >
@@ -164,6 +179,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                         <button
                             type="button"
                             className="vik-floating-action-btn"
+                            onMouseDown={e => e.preventDefault()}
                             onClick={insertBulletList}
                             title="Bulleted List"
                         >
@@ -174,6 +190,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                         <button
                             type="button"
                             className="vik-floating-action-btn"
+                            onMouseDown={e => e.preventDefault()}
                             onClick={insertOrderedList}
                             title="Numbered List"
                         >
@@ -185,6 +202,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                             <button
                                 type="button"
                                 className="vik-floating-action-btn"
+                                onMouseDown={e => e.preventDefault()}
                                 onClick={insertTaskList}
                                 title="Interactive Task List"
                             >
@@ -196,6 +214,7 @@ export const FloatingBlockMenu: React.FC<FloatingBlockMenuProps> = ({
                         <button
                             type="button"
                             className="vik-floating-action-btn"
+                            onMouseDown={e => e.preventDefault()}
                             onClick={insertDivider}
                             title="Divider Line"
                         >

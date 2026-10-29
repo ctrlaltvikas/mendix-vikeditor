@@ -2,6 +2,8 @@
    VikEditor - Medium-Style Blog WYSIWYG Editor for Mendix 10
    ========================================================================== */
 
+@import "tippy.js/dist/tippy.css";
+
 $vik-font-serif: "Charter", "Georgia", "Cambria", "Times New Roman", serif;
 $vik-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $vik-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;

@@ -21,6 +21,7 @@
   },
   "packagePath": "com.vikasyadav.widget.web.vikeditor",
   "scripts": {
+    "dev": "vite",
     "start": "pluggable-widgets-tools start:web",
     "build": "pluggable-widgets-tools build:web",
     "lint": "pluggable-widgets-tools lint",
@@ -51,6 +52,8 @@
   },
   "devDependencies": {
     "@mendix/pluggable-widgets-tools": "^10.15.0",
-    "typescript": "^5.4.5"
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "^5.4.5",
+    "vite": "^8.3.5"
   }
 }

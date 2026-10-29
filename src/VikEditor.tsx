@@ -48,13 +48,20 @@ export default function VikEditor(props: VikEditorContainerProps) {
         }
     }, [isAvailable, contentAttribute?.value]);
 
+    const isContentEmpty = (html?: string) => !html || html === "<p></p>" || html === "<p><br></p>";
+
     const commitToMendix = useCallback(
         (htmlToCommit: string) => {
             if (!contentAttribute || contentAttribute.readOnly) {
                 return;
             }
 
-            if (contentAttribute.value !== htmlToCommit) {
+            const currentVal = contentAttribute.value || "";
+            if (isContentEmpty(currentVal) && isContentEmpty(htmlToCommit)) {
+                return;
+            }
+
+            if (currentVal !== htmlToCommit) {
                 contentAttribute.setValue(htmlToCommit);
 
                 if (onChange && onChange.canExecute && !onChange.isExecuting) {

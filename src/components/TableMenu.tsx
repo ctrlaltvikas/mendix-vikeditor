@@ -17,7 +17,8 @@ export const TableMenu: React.FC<TableMenuProps> = ({ editor }) => {
             tippyOptions={{
                 duration: 150,
                 placement: "top",
-                offset: [0, 8]
+                offset: [0, 8],
+                interactive: true
             }}
             shouldShow={shouldShow}
             className="vik-table-menu"
@@ -33,6 +34,7 @@ export const TableMenu: React.FC<TableMenuProps> = ({ editor }) => {
                 <button
                     type="button"
                     className="vik-table-btn"
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => editor.chain().focus().addRowAfter().run()}
                     title="Add Row Below"
                 >
@@ -41,6 +43,7 @@ export const TableMenu: React.FC<TableMenuProps> = ({ editor }) => {
                 <button
                     type="button"
                     className="vik-table-btn"
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => editor.chain().focus().deleteRow().run()}
                     title="Delete Current Row"
                 >
@@ -52,6 +55,7 @@ export const TableMenu: React.FC<TableMenuProps> = ({ editor }) => {
                 <button
                     type="button"
                     className="vik-table-btn"
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => editor.chain().focus().addColumnAfter().run()}
                     title="Add Column Right"
                 >
@@ -60,6 +64,7 @@ export const TableMenu: React.FC<TableMenuProps> = ({ editor }) => {
                 <button
                     type="button"
                     className="vik-table-btn"
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => editor.chain().focus().deleteColumn().run()}
                     title="Delete Current Column"
                 >
@@ -71,6 +76,7 @@ export const TableMenu: React.FC<TableMenuProps> = ({ editor }) => {
                 <button
                     type="button"
                     className="vik-table-btn"
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => editor.chain().focus().toggleHeaderRow().run()}
                     title="Toggle Header Row"
                 >
@@ -80,6 +86,7 @@ export const TableMenu: React.FC<TableMenuProps> = ({ editor }) => {
                 <button
                     type="button"
                     className="vik-table-btn vik-table-btn-danger"
+                    onMouseDown={e => e.preventDefault()}
                     onClick={() => editor.chain().focus().deleteTable().run()}
                     title="Delete Table"
                 >

@@ -252,9 +252,11 @@ export const createSlashCommandsExtension = (options: {
                                     return;
                                 }
 
-                                popup[0]?.setProps({
-                                    getReferenceClientRect: props.clientRect as () => DOMRect
-                                });
+                                if (popup && popup[0]) {
+                                    popup[0].setProps({
+                                        getReferenceClientRect: props.clientRect as () => DOMRect
+                                    });
+                                }
                             },
 
                             onKeyDown: props => {

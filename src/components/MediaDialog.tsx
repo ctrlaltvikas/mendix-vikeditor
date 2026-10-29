@@ -26,6 +26,7 @@ export const MediaDialog: React.FC<MediaDialogProps> = ({
     const [activeTab, setActiveTab] = useState<"upload" | "url">("upload");
     const [mediaUrl, setMediaUrl] = useState("");
     const [altText, setAltText] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -34,8 +35,9 @@ export const MediaDialog: React.FC<MediaDialogProps> = ({
     }
 
     const handleFile = (file: File) => {
+        setErrorMessage("");
         if (!file.type.startsWith("image/")) {
-            alert("Please select an image file (PNG, JPG, GIF, WebP, SVG).");
+            setErrorMessage("Please select an image file (PNG, JPG, GIF, WebP, SVG).");
             return;
         }
 
@@ -54,6 +56,7 @@ export const MediaDialog: React.FC<MediaDialogProps> = ({
                 onClose();
                 setMediaUrl("");
                 setAltText("");
+                setErrorMessage("");
             }
         };
         reader.readAsDataURL(file);
@@ -69,18 +72,26 @@ export const MediaDialog: React.FC<MediaDialogProps> = ({
 
     const handleSubmitUrl = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!mediaUrl.trim()) {
+        setErrorMessage("");
+        const trimmedUrl = mediaUrl.trim();
+        if (!trimmedUrl) {
             return;
         }
 
         if (type === "image") {
-            onInsertImage(mediaUrl.trim(), altText.trim());
+            onInsertImage(trimmedUrl, altText.trim());
         } else if (type === "video") {
-            onInsertVideo(mediaUrl.trim());
+            const ytRegex = /^(https?:\/\/)?(www\.|m\.)?(youtube\.com|youtu\.be)\/.+$/i;
+            if (!ytRegex.test(trimmedUrl)) {
+                setErrorMessage("Please enter a valid YouTube video link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)");
+                return;
+            }
+            onInsertVideo(trimmedUrl);
         }
 
         setMediaUrl("");
         setAltText("");
+        setErrorMessage("");
         onClose();
     };
 
@@ -128,6 +139,11 @@ export const MediaDialog: React.FC<MediaDialogProps> = ({
                 )}
 
                 <div className="vik-modal-body">
+                    {errorMessage && (
+                        <div style={{ color: "#ef4444", fontSize: "13px", padding: "8px 12px", background: "#fef2f2", borderRadius: "6px", marginBottom: "12px", border: "1px solid #fecaca" }}>
+                            {errorMessage}
+                        </div>
+                    )}
                     {type === "image" && activeTab === "upload" && uploadMode !== "urlOnly" ? (
                         <div
                             className={`vik-dropzone ${isDragging ? "is-dragover" : ""}`}
