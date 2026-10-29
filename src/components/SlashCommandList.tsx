@@ -41,15 +41,23 @@ export const SlashCommandList = forwardRef<SlashCommandListRef, SlashCommandList
     useImperativeHandle(ref, () => ({
         onKeyDown: ({ event }) => {
             if (event.key === "ArrowUp") {
+                event.preventDefault();
                 setSelectedIndex((prevIndex) => (prevIndex + items.length - 1) % items.length);
                 return true;
             }
             if (event.key === "ArrowDown") {
+                event.preventDefault();
                 setSelectedIndex((prevIndex) => (prevIndex + 1) % items.length);
                 return true;
             }
-            if (event.key === "Enter") {
+            if (
+                event.key === "Enter" ||
+                event.key === "Tab" ||
+                event.key === " " ||
+                event.key === "/"
+            ) {
                 if (items[selectedIndex]) {
+                    event.preventDefault();
                     command(items[selectedIndex]);
                     return true;
                 }
@@ -74,7 +82,16 @@ export const SlashCommandList = forwardRef<SlashCommandListRef, SlashCommandList
                     type="button"
                     key={item.title}
                     className={`vik-slash-item ${index === selectedIndex ? "is-selected" : ""}`}
-                    onClick={() => command(item)}
+                    onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        command(item);
+                    }}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        command(item);
+                    }}
                     onMouseEnter={() => setSelectedIndex(index)}
                 >
                     <div className="vik-slash-item-icon">{item.icon}</div>

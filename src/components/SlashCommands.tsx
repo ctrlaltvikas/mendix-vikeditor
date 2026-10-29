@@ -207,6 +207,9 @@ export const createSlashCommandsExtension = (options: {
                 Suggestion({
                     editor: this.editor,
                     char: "/",
+                    command: ({ editor, range, props }) => {
+                        props.command({ editor, range });
+                    },
                     items: ({ query }) => getSuggestionItems(query, options),
                     render: () => {
                         let component: ReactRenderer<SlashCommandListRef>;

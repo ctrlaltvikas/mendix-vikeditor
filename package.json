@@ -22,6 +22,7 @@
   "packagePath": "com.vikasyadav.widget.web.vikeditor",
   "scripts": {
     "dev": "vite",
+    "test": "pluggable-widgets-tools test:unit:web",
     "start": "pluggable-widgets-tools start:web",
     "build": "pluggable-widgets-tools build:web",
     "lint": "pluggable-widgets-tools lint",
